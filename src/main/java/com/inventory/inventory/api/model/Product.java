@@ -39,7 +39,7 @@ public class Product implements Serializable{
         this.name = name;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
