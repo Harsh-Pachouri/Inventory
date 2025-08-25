@@ -7,25 +7,9 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: inventory_user
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: inventory_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      redis:
-        image: redis:7
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+      docker:
+        image: docker:dind
+        options: --privileged
 
     steps:
       - name: Checkout code
@@ -40,11 +24,14 @@ jobs:
       - name: Make mvnw executable
         run: chmod +x mvnw
 
+      - name: Cache Maven dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Build and test with Maven
-        run: ./mvnw package
+        run: ./mvnw clean package
         env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/inventory_db
-          SPRING_DATASOURCE_USERNAME: inventory_user
-          SPRING_DATASOURCE_PASSWORD: password
-          SPRING_DATA_REDIS_HOST: localhost
-          SPRING_DATA_REDIS_PORT: 6379
+          SPRING_PROFILES_ACTIVE: test

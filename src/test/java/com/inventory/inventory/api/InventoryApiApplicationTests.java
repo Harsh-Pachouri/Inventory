@@ -1,14 +1,13 @@
-package com.inventory.inventory.api;
+package com.inventory.inventory.api; // Adjust package if needed
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class InventoryApiApplicationTests {
-    @Disabled
-	@Test
-	void contextLoads() {
-	}
+// Extend the base class to inherit the container setup
+class InventoryApiApplicationTests extends AbstractIntegrationTest {
+
+    @Test
+    void contextLoads() {
+        // This test will now run with a real DB and Redis connection
+    }
 
 }
