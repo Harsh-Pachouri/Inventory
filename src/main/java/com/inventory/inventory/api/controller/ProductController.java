@@ -1,5 +1,6 @@
 package com.inventory.inventory.api.controller;
 
+import com.inventory.inventory.api.dto.CreateProductRequest;
 import com.inventory.inventory.api.model.Product;
 import com.inventory.inventory.api.service.ProductService;
 import jakarta.validation.Valid;
@@ -26,8 +27,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@Valid @RequestBody Product product){
-        return this.productService.createProduct(product);
+    public Product createProduct(@Valid @RequestBody CreateProductRequest request){
+        return this.productService.createProduct(request);
     }
 
 }
