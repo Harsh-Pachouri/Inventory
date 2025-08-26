@@ -27,11 +27,9 @@ public class ProductService{
     }
 
     public Product createProduct(CreateProductRequest request) {
-        // Look up the supplier
         Supplier supplier = supplierRepository.findById(request.supplierId())
             .orElseThrow(() -> new RuntimeException("Supplier not found with id: " + request.supplierId()));
         
-        // Create the product with supplier
         Product product = new Product(request.name(), request.quantity(), request.price());
         product.setSupplier(supplier);
         
