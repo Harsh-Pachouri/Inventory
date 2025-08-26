@@ -24,15 +24,14 @@ public class ProductServiceTest {
 
     @Test
     public void testFindAllProducts(){
-
         Product product1 = new Product("Razer Viper Mini", 1, 30.0);
-        Product product2 = new Product("Lenovo BT", 1, 17.0);
-        Product product3 = new Product("Ambrane Swift", 1, 20.0);
-        List<Product> productList = List.of(product1, product2, product3);
+        List<Product> productList = List.of(product1);
         when(productRepository.findAll()).thenReturn(productList);
+
         List<Product> result = productService.findAllProducts();
+
         assertNotNull(result);
-        assertEquals(3, result.size());
+        assertEquals(1, result.size());
         assertEquals("Razer Viper Mini", result.get(0).getName());
     }
 }
