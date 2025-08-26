@@ -12,17 +12,21 @@ public class QueryController {
 
 
     private final AIService aiservice;
-
-    public QueryController(AIService aiservice){
+    private final JdbcTemplate jdbctemplate;
+    public QueryController(AIService aiservice, JdbcTemplate jdbctemplate){
         this.aiservice = aiservice;
+        this.jdbctemplate = jdbctemplate;
     }
 
-    public record QueryRequest(String question) {
+    public record QueryRequest(String question) {}
 
+    private List<Map<String, Object>> executeQueryAndReturnResults(String sql){
+        return jdbcTemplate.queryForList(sql);
     }
 
     @PostMapping
-    public String executeQuery(@RequestBody QueryRequest request){
-        return aiservice.getSQLQuery(request.question());
+    public List<Map<String, Object>> executeQuery(@RequestBody QueryRequest request){
+        String sql = aiservice.getSQLQuery(request.question());
+        return executeQueryAndReturnResults(sql);
     }
 }

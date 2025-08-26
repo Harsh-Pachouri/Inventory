@@ -55,7 +55,7 @@ public class Product implements Serializable{
         return price;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
