@@ -1,21 +1,25 @@
 package com.inventory.inventory.api.controller;
 
 import com.inventory.inventory.api.service.AIService;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RequestMapping("/api/query")
 @RestController
 public class QueryController {
 
-
     private final AIService aiservice;
-    private final JdbcTemplate jdbctemplate;
-    public QueryController(AIService aiservice, JdbcTemplate jdbctemplate){
+    private final JdbcTemplate jdbcTemplate;
+    
+    public QueryController(AIService aiservice, JdbcTemplate jdbcTemplate){
         this.aiservice = aiservice;
-        this.jdbctemplate = jdbctemplate;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public record QueryRequest(String question) {}
