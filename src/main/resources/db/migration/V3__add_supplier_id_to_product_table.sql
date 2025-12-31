@@ -1,0 +1,1 @@
+alter table product add column supplier_id bigint, add constraint FKsupplierID foreign key (supplier_id) references supplier (id);
