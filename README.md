@@ -1,123 +1,104 @@
-# Inventory Management API: An AI-Powered REST Service
+# AI-Powered Inventory Management System (Full Stack)
 
-A robust REST API for inventory management, built with Spring Boot. This project features secure, validated endpoints, a relational database schema, high-performance caching, and an advanced AI-powered query engine. The entire application is containerized and includes a complete CI/CD pipeline with automated integration testing for production readiness.
+A robust Full Stack application for inventory management, combining a **Spring Boot** backend with a modern **React** frontend. This project features secure REST endpoints, a relational database schema, high-performance caching, and an advanced **AI-powered assistant** that translates natural language questions into executable SQL queries.
+
+The entire application is containerized and includes a complete CI/CD pipeline with automated integration testing for production readiness.
 
 ## Key Features
 
-* **AI-Powered Queries**: An endpoint that securely translates natural language questions (e.g., "how many laptops are in stock?") into executable SQL queries using an external LLM.
+* **Full Stack Architecture**: A decoupled system with a responsive React dashboard consuming a Spring Boot REST API.
+* **AI-Powered Assistant**: An interactive chat interface that securely translates natural language (e.g., "Which items are low on stock?") into SQL queries using **Groq (Llama 3)**.
+* **Live Inventory Dashboard**: Real-time view of stock levels with sortable columns (ID, Name, Quantity, Price) and visual stock status indicators.
 * **Relational Database Schema**: Uses PostgreSQL with JPA/Hibernate for object-relational mapping between `Product` and `Supplier` entities.
 * **Database Migrations**: Leverages Flyway for version-controlled, automated database schema changes, ensuring consistency across all environments.
 * **High-Performance Caching**: Integrates Redis to cache database query results, significantly reducing latency on frequent requests.
-* **Robust API Validation**: Employs Jakarta Bean Validation to automatically validate incoming data, preventing invalid entries from reaching the business logic.
 * **Automated Testing**: A comprehensive test suite using **JUnit** and **Mockito** for unit tests, and **Testcontainers** for reliable, self-contained integration tests.
 * **CI/CD Pipeline**: A GitHub Actions workflow automatically builds and runs the full test suite on every push.
-* **Containerized Environment**: The entire application is containerized with Docker, ensuring portability and consistent deployments.
+* **Cloud Ready**: Configured for deployment on platforms like Render (Backend) and Vercel (Frontend), with Docker support for local development.
 
 ## Tech Stack
 
-| Category         | Technology                                                                     |
-| ---------------- | ------------------------------------------------------------------------------ |
-| **Backend** | Java 17, Spring Boot, Spring Data JPA, Hibernate, Spring WebFlux (for WebClient) |
-| **Database** | PostgreSQL, Redis, Flyway                                                      |
-| **DevOps** | Docker, Docker Compose, GitHub Actions                                         |
-| **Testing** | JUnit 5, Mockito, Testcontainers                                               |
-| **AI** | Groq API (or other LLM APIs)                                                   |
+| Category | Technology |
+| :--- | :--- |
+| **Frontend** | React, Vite, Tailwind CSS, Lucide React, Axios |
+| **Backend** | Java 17, Spring Boot, Spring Data JPA, Hibernate, Spring WebFlux |
+| **Database** | PostgreSQL, Redis, Flyway |
+| **DevOps** | Docker, Docker Compose, GitHub Actions |
+| **AI** | Groq API (Llama-3-70b-Versatile) |
 
 ## System Architecture
 
-The application runs as a multi-container stack orchestrated by Docker Compose for local development. The Spring Boot application serves the API, connecting to PostgreSQL for persistence and Redis for caching. For the AI query feature, it communicates externally with an LLM API.
+The application runs as a multi-container stack. The Spring Boot API orchestrates data persistence and AI logic, while the React Frontend provides the user interface.
 
-`User/Client (Postman) -> Spring Boot API -> (1. AIService -> LLM API), (2. Repository/JdbcTemplate -> Redis Cache / PostgreSQL DB)`
+`User (React UI) -> Spring Boot API -> (1. AIService -> Groq LLM), (2. Repository -> Redis Cache / PostgreSQL DB)`
 
 ## Getting Started
 
-Follow these instructions to get a local copy up and running.
+Follow these instructions to get the full stack up and running locally.
 
 ### Prerequisites
 
 * Java Development Kit (JDK) 17+
+* Node.js 18+ and npm
 * Docker and Docker Compose
-* A Groq API Key (or other LLM provider key)
+* A Groq API Key
 
 ### Installation
 
 1.  **Clone the repository:**
     ```bash
     git clone [link to this repository]
-    cd inventory-api
+    cd inventory-fullstack
     ```
 
-2.  **Create an environment file:**
-    Create a file named `.env` in the root directory and add your API key:
+2.  **Configure Environment:**
+    Create a file named `.env` in the root directory (or set environment variables) for your AI API Key:
     ```
-    GROQ_API_KEY=your_secret_api_key_goes_here
+    GROQ_API_KEY=your_secret_key_here
     ```
 
-3.  **Add `docker-compose.yml`:**
-    Create a file named `docker-compose.yml` in the root directory with the following content. This will manage the PostgreSQL and Redis services for you.
-
-    <details>
-    <summary>Click to expand docker-compose.yml</summary>
-
-    ```yaml
-    version: '3.8'
-    services:
-      postgres:
-        image: postgres:15-alpine
-        container_name: inventory-postgres
-        ports:
-          - "5432:5432"
-        environment:
-          - POSTGRES_USER=inventory_user
-          - POSTGRES_PASSWORD=password
-          - POSTGRES_DB=inventory_db
-        volumes:
-          - postgres_data:/var/lib/postgresql/data
-
-      redis:
-        image: redis:7-alpine
-        container_name: inventory-redis
-        ports:
-          - "6379:6379"
-        volumes:
-          - redis_data:/data
-
-    volumes:
-      postgres_data:
-      redis_data:
-    ```
-    </details>
-
-4.  **Start external services:**
-    Run the following command to start PostgreSQL and Redis in the background.
+3.  **Start Database & Cache:**
+    Use Docker Compose to spin up PostgreSQL and Redis instantly.
     ```bash
     docker-compose up -d
     ```
 
-5.  **Run the application:**
-    Use the Maven wrapper to run the Spring Boot application. It will automatically connect to the services started by Docker Compose.
-    ```bash
-    ./mvnw spring-boot:run
-    ```
+### Running the Backend
 
-The API will now be available at `http://localhost:8080`.
+1.  Open a terminal in the root directory.
+2.  Run the Spring Boot application using the Maven wrapper:
+    ```bash
+    ./mvnw clean spring-boot:run
+    ```
+    *The Backend API will start at `http://localhost:8080`*
+
+### Running the Frontend
+
+1.  Open a **new terminal**.
+2.  Navigate to the UI folder:
+    ```bash
+    cd inventory-ui
+    ```
+3.  Install dependencies and start the dev server:
+    ```bash
+    npm install
+    npm run dev
+    ```
+4.  Open your browser and visit the URL shown (usually `http://localhost:5173`).
 
 ## API Endpoints
 
-| Method | Path                 | Auth Required? | Description                                   |
-| :----- | :------------------- | :------------- | :-------------------------------------------- |
-| `POST` | `/api/query`         | No             | Queries the database using natural language.  |
-| `GET`  | `/api/products`      | No             | Retrieves a list of all products.             |
-| `GET`  | `/api/products/{id}` | No             | Retrieves a single product by its ID.         |
-| `POST` | `/api/products`      | No             | Creates a new product.                        |
-| `GET`  | `/api/suppliers`     | No             | Retrieves a list of all suppliers.            |
-| `POST` | `/api/suppliers`     | No             | Creates a new supplier.                       |
+| Method | Path             | Description |
+| :----- | :--------------- | :---------- |
+| `POST` | `/api/query`     | **AI Endpoint**: Accepts natural language, returns data or chat response. |
+| `GET`  | `/api/products`  | Retrieves all products. |
+| `POST` | `/api/products`  | Creates a new product. |
+| `GET`  | `/api/suppliers` | Retrieves all suppliers. |
+| `POST` | `/api/suppliers` | Creates a new supplier. |
 
 ## Running Tests
 
-To run the complete suite of unit and integration tests locally, use the following command. The integration tests will use Testcontainers to automatically start and stop their own temporary database and cache.
+To run the complete suite of backend unit and integration tests locally, use the following command. The integration tests will use Testcontainers to automatically start and stop their own temporary database and cache.
+
 ```bash
 ./mvnw test
-
-License
-Distributed under the MIT License. See LICENSE for more information.
